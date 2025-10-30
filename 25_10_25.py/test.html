@@ -1,0 +1,1355 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gaming Blog</title>
+  <script src="/_sdk/element_sdk.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+        body {
+            box-sizing: border-box;
+        }
+        
+        .gradient-overlay {
+            background: linear-gradient(135deg, rgba(0,0,0,0.8) 0%, rgba(20,20,20,0.6) 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+        }
+        
+        .tactical-border {
+            border: 2px solid;
+            border-image: linear-gradient(45deg, #ff6b35, #f7931e) 1;
+        }
+        
+        .glow-effect {
+            box-shadow: 0 0 20px rgba(255, 107, 53, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .glow-effect:hover {
+            box-shadow: 0 0 30px rgba(255, 107, 53, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 107, 53, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(255, 107, 53, 0.5); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #f97316, #ea580c);
+            border: none;
+            color: white;
+            font-weight: 600;
+            padding: 12px 24px;
+            border-radius: 8px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #ea580c, #dc2626);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(249, 115, 22, 0.4);
+        }
+        
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 5px 15px rgba(249, 115, 22, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(75, 85, 99, 0.8);
+            border: 1px solid rgba(156, 163, 175, 0.3);
+            color: #d1d5db;
+            font-weight: 500;
+            padding: 10px 20px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(107, 114, 128, 0.9);
+            border-color: rgba(249, 115, 22, 0.5);
+            color: #f97316;
+            transform: translateY(-1px);
+        }
+        
+        .nav-link {
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, #f97316, #ea580c);
+            border-radius: 1px;
+        }
+        
+        .form-input {
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .form-input:focus {
+            border-color: #f97316;
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.1);
+            outline: none;
+        }
+        
+        .category-filter {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+        
+        .category-filter:hover {
+            transform: translateY(-2px);
+        }
+        
+        .category-filter.active {
+            box-shadow: 0 4px 15px rgba(249, 115, 22, 0.3);
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ffffff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .toast {
+            transform: translateX(100%);
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .toast.show {
+            transform: translateX(0);
+        }
+        
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+        }
+        
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+        
+        @media (max-width: 768px) {
+            .card-hover:hover {
+                transform: none;
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            }
+        }
+    </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+ </head>
+ <body class="min-h-full bg-gray-900 text-white font-sans"><!-- Navigation Header -->
+  <nav class="bg-black bg-opacity-90 backdrop-blur-sm border-b border-orange-500 sticky top-0 z-50">
+   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center h-16">
+     <div class="flex items-center space-x-4">
+      <div class="w-10 h-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg flex items-center justify-center"><span class="text-white font-bold text-xl">G</span>
+      </div>
+      <h1 id="blog-title" class="text-2xl font-bold bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent">TACTICAL GAMING BLOG</h1>
+     </div>
+     <div class="hidden md:flex space-x-8"><a href="#home" onclick="showPage('home')" class="nav-link text-gray-300 hover:text-orange-400 transition-colors font-medium cursor-pointer">HOME</a> <a href="#news" onclick="showPage('news')" class="nav-link text-gray-300 hover:text-orange-400 transition-colors font-medium cursor-pointer">NEWS</a> <a href="#blogs" onclick="showPage('blogs')" class="nav-link text-gray-300 hover:text-orange-400 transition-colors font-medium cursor-pointer">BLOGS</a> <a href="#about" onclick="showPage('about')" class="nav-link text-gray-300 hover:text-orange-400 transition-colors font-medium cursor-pointer">ABOUT US</a>
+      <div id="auth-buttons" class="flex space-x-4"><button onclick="showPage('login')" class="btn-secondary">LOGIN</button> <button onclick="showPage('signup')" class="btn-primary">SIGN UP</button>
+      </div>
+      <div id="user-menu" class="hidden flex items-center space-x-4"><span id="user-name" class="text-orange-400 font-medium"></span> <button onclick="logout()" class="btn-secondary">LOGOUT</button>
+      </div>
+     </div><!-- Mobile menu button -->
+     <div class="md:hidden"><button onclick="toggleMobileMenu()" class="text-gray-300 hover:text-orange-400 transition-colors p-2">
+       <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+       </svg></button>
+     </div>
+    </div>
+   </div>
+  </nav><!-- Mobile Menu Overlay -->
+  <div id="mobile-menu" class="mobile-menu fixed inset-y-0 right-0 z-50 w-64 bg-gray-900 border-l border-gray-700 md:hidden">
+   <div class="flex items-center justify-between p-4 border-b border-gray-700"><span class="text-xl font-bold text-orange-400">MENU</span> <button onclick="toggleMobileMenu()" class="text-gray-300 hover:text-orange-400 transition-colors p-2">
+     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewbox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+     </svg></button>
+   </div>
+   <nav class="p-4 space-y-4"><a href="#home" onclick="showPage('home'); toggleMobileMenu();" class="block text-gray-300 hover:text-orange-400 transition-colors font-medium py-2">HOME</a> <a href="#news" onclick="showPage('news'); toggleMobileMenu();" class="block text-gray-300 hover:text-orange-400 transition-colors font-medium py-2">NEWS</a> <a href="#blogs" onclick="showPage('blogs'); toggleMobileMenu();" class="block text-gray-300 hover:text-orange-400 transition-colors font-medium py-2">BLOGS</a> <a href="#about" onclick="showPage('about'); toggleMobileMenu();" class="block text-gray-300 hover:text-orange-400 transition-colors font-medium py-2">ABOUT US</a>
+    <div class="border-t border-gray-700 pt-4 mt-4">
+     <div id="mobile-auth-buttons" class="space-y-3"><button onclick="showPage('login'); toggleMobileMenu();" class="w-full btn-secondary text-left">LOGIN</button> <button onclick="showPage('signup'); toggleMobileMenu();" class="w-full btn-primary text-left">SIGN UP</button>
+     </div>
+     <div id="mobile-user-menu" class="hidden space-y-3">
+      <div class="text-orange-400 font-medium py-2" id="mobile-user-name"></div><button onclick="logout(); toggleMobileMenu();" class="w-full btn-secondary text-left">LOGOUT</button>
+     </div>
+    </div>
+   </nav>
+  </div><!-- Mobile Menu Backdrop -->
+  <div id="mobile-backdrop" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden" onclick="toggleMobileMenu()"></div><!-- Page Container -->
+  <div id="page-container"><!-- Home Page -->
+   <div id="home-page" class="page-content"><!-- Hero Section -->
+    <section class="relative h-96 bg-gradient-to-r from-gray-900 via-gray-800 to-black overflow-hidden">
+     <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-full flex items-center">
+      <div class="max-w-3xl">
+       <p id="tagline" class="text-orange-400 font-semibold text-lg mb-4 tracking-wide">LATEST GAMING NEWS &amp; STRATEGIES</p>
+       <h2 class="text-5xl md:text-6xl font-bold mb-6 leading-tight"><span class="bg-gradient-to-r from-white to-gray-300 bg-clip-text text-transparent"> DOMINATE THE </span> <br><span class="bg-gradient-to-r from-orange-400 to-red-500 bg-clip-text text-transparent"> BATTLEFIELD </span></h2><button class="btn-primary px-8 py-3 font-bold tracking-wide glow-effect"> READ LATEST POSTS </button>
+      </div>
+     </div><!-- Tactical Grid Overlay -->
+     <div class="absolute top-0 right-0 w-1/3 h-full opacity-10">
+      <svg viewbox="0 0 100 100" class="w-full h-full"><defs>
+        <pattern id="grid" width="10" height="10" patternunits="userSpaceOnUse">
+         <path d="M 10 0 L 0 0 0 10" fill="none" stroke="#ff6b35" stroke-width="0.5" />
+        </pattern>
+       </defs> <rect width="100" height="100" fill="url(#grid)" />
+      </svg>
+     </div>
+    </section><!-- Featured Article -->
+    <section class="py-16 bg-gray-800">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+       <h2 class="text-4xl font-bold mb-4"><span class="text-orange-400">FEATURED</span> ARTICLE</h2>
+       <div class="w-24 h-1 bg-gradient-to-r from-orange-400 to-red-500 mx-auto"></div>
+      </div>
+      <div class="bg-gray-900 rounded-lg overflow-hidden card-hover tactical-border">
+       <div class="md:flex">
+        <div class="md:w-1/2 bg-gradient-to-br from-gray-700 to-gray-800 p-8 flex items-center justify-center">
+         <div class="text-center">
+          <div class="w-32 h-32 bg-gradient-to-br from-orange-500 to-red-600 rounded-full mx-auto mb-4 flex items-center justify-center">
+           <svg class="w-16 h-16 text-white" fill="currentColor" viewbox="0 0 20 20"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+           </svg>
+          </div>
+          <p class="text-gray-400 text-sm">FEATURED CONTENT</p>
+         </div>
+        </div>
+        <div class="md:w-1/2 p-8">
+         <div class="flex items-center mb-4"><span class="bg-orange-500 text-black px-3 py-1 text-xs font-bold rounded">STRATEGY</span> <span class="text-gray-400 text-sm ml-4">December 15, 2024</span>
+         </div>
+         <h3 id="featured-title" class="text-2xl font-bold mb-4 text-white">Master the New Battle Royale Map: Advanced Tactics and Hidden Locations</h3>
+         <p id="featured-excerpt" class="text-gray-300 mb-6 leading-relaxed">Discover the secret strategies and hidden loot spots that will give you the competitive edge in the latest battle royale update. From optimal landing zones to advanced movement techniques.</p><button class="bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-2 font-semibold rounded hover:from-orange-600 hover:to-red-700 transition-all"> READ FULL ARTICLE → </button>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section><!-- Latest Articles Grid -->
+    <section class="py-16 bg-gray-900">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+       <h2 class="text-4xl font-bold mb-4"><span class="text-white">LATEST</span> <span class="text-orange-400">UPDATES</span></h2>
+       <div class="w-24 h-1 bg-gradient-to-r from-orange-400 to-red-500 mx-auto"></div>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"><!-- Article Card 1 -->
+       <article class="bg-gray-800 rounded-lg overflow-hidden card-hover border border-gray-700">
+        <div class="h-48 bg-gradient-to-br from-blue-600 to-purple-700 flex items-center justify-center">
+         <svg class="w-16 h-16 text-white" fill="currentColor" viewbox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+         </svg>
+        </div>
+        <div class="p-6">
+         <div class="flex items-center mb-3"><span class="bg-blue-500 text-white px-2 py-1 text-xs font-bold rounded">UPDATE</span> <span class="text-gray-400 text-sm ml-3">Dec 14, 2024</span>
+         </div>
+         <h3 id="article-1-title" class="text-xl font-bold mb-3 text-white hover:text-orange-400 transition-colors cursor-pointer">Season 12 Weapon Balance Changes: What You Need to Know</h3>
+         <p class="text-gray-300 text-sm mb-4">Complete breakdown of all weapon adjustments, nerfs, and buffs in the latest season update.</p><button class="text-orange-400 font-semibold text-sm hover:text-orange-300 transition-colors"> READ MORE → </button>
+        </div>
+       </article><!-- Article Card 2 -->
+       <article class="bg-gray-800 rounded-lg overflow-hidden card-hover border border-gray-700">
+        <div class="h-48 bg-gradient-to-br from-green-600 to-teal-700 flex items-center justify-center">
+         <svg class="w-16 h-16 text-white" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+         </svg>
+        </div>
+        <div class="p-6">
+         <div class="flex items-center mb-3"><span class="bg-green-500 text-white px-2 py-1 text-xs font-bold rounded">GUIDE</span> <span class="text-gray-400 text-sm ml-3">Dec 13, 2024</span>
+         </div>
+         <h3 id="article-2-title" class="text-xl font-bold mb-3 text-white hover:text-orange-400 transition-colors cursor-pointer">Pro Player Loadouts: Copy the Best Configurations</h3>
+         <p class="text-gray-300 text-sm mb-4">Detailed analysis of professional player weapon setups and attachment combinations.</p><button class="text-orange-400 font-semibold text-sm hover:text-orange-300 transition-colors"> READ MORE → </button>
+        </div>
+       </article><!-- Article Card 3 -->
+       <article class="bg-gray-800 rounded-lg overflow-hidden card-hover border border-gray-700">
+        <div class="h-48 bg-gradient-to-br from-red-600 to-orange-700 flex items-center justify-center">
+         <svg class="w-16 h-16 text-white" fill="currentColor" viewbox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+         </svg>
+        </div>
+        <div class="p-6">
+         <div class="flex items-center mb-3"><span class="bg-red-500 text-white px-2 py-1 text-xs font-bold rounded">EVENT</span> <span class="text-gray-400 text-sm ml-3">Dec 12, 2024</span>
+         </div>
+         <h3 class="text-xl font-bold mb-3 text-white hover:text-orange-400 transition-colors cursor-pointer">Championship Tournament: Schedule and Prize Pool</h3>
+         <p class="text-gray-300 text-sm mb-4">Everything you need to know about the upcoming world championship tournament.</p><button class="text-orange-400 font-semibold text-sm hover:text-orange-300 transition-colors"> READ MORE → </button>
+        </div>
+       </article>
+      </div>
+     </div>
+    </section><!-- Newsletter Section -->
+    <section class="py-16 bg-black">
+     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold mb-4"><span class="text-white">STAY</span> <span class="text-orange-400">UPDATED</span></h2>
+      <p class="text-gray-300 mb-8 text-lg">Get the latest gaming news, strategies, and exclusive content delivered to your inbox.</p>
+      <div class="flex flex-col sm:flex-row gap-4 max-w-md mx-auto"><input type="email" placeholder="Enter your email" class="form-input flex-1 px-4 py-3 bg-gray-800 border border-gray-600 rounded text-white placeholder-gray-400"> <button class="btn-primary px-8 py-3 font-bold rounded pulse-glow"> SUBSCRIBE </button>
+      </div>
+     </div>
+    </section><!-- Footer -->
+    <footer class="bg-gray-900 border-t border-gray-700 py-12">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8">
+       <div>
+        <div class="flex items-center space-x-2 mb-4">
+         <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded flex items-center justify-center"><span class="text-white font-bold">G</span>
+         </div><span class="text-xl font-bold text-white">TACTICAL GAMING</span>
+        </div>
+        <p class="text-gray-400 text-sm">Your ultimate source for gaming strategies, news, and professional insights.</p>
+       </div>
+       <div>
+        <h4 class="text-white font-semibold mb-4">CATEGORIES</h4>
+        <ul class="space-y-2 text-sm">
+         <li><a href="#" class="text-gray-400 hover:text-orange-400 transition-colors">Battle Royale</a></li>
+         <li><a href="#" class="text-gray-400 hover:text-orange-400 transition-colors">Multiplayer</a></li>
+         <li><a href="#" class="text-gray-400 hover:text-orange-400 transition-colors">Weapon Guides</a></li>
+         <li><a href="#" class="text-gray-400 hover:text-orange-400 transition-colors">Pro Tips</a></li>
+        </ul>
+       </div>
+       <div>
+        <h4 class="text-white font-semibold mb-4">RESOURCES</h4>
+        <ul class="space-y-2 text-sm">
+         <li><a href="#" class="text-gray-400 hover:text-orange-400 transition-colors">Tier Lists</a></li>
+         <li><a href="#" class="text-gray-400 hover:text-orange-400 transition-colors">Meta Analysis</a></li>
+         <li><a href="#" class="text-gray-400 hover:text-orange-400 transition-colors">Patch Notes</a></li>
+         <li><a href="#" class="text-gray-400 hover:text-orange-400 transition-colors">Community</a></li>
+        </ul>
+       </div>
+       <div>
+        <h4 class="text-white font-semibold mb-4">CONNECT</h4>
+        <div class="flex space-x-4"><a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-orange-500 transition-colors"> <span class="text-white text-sm font-bold">T</span> </a> <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-orange-500 transition-colors"> <span class="text-white text-sm font-bold">Y</span> </a> <a href="#" class="w-10 h-10 bg-gray-800 rounded-full flex items-center justify-center hover:bg-orange-500 transition-colors"> <span class="text-white text-sm font-bold">D</span> </a>
+        </div>
+       </div>
+      </div>
+      <div class="border-t border-gray-700 mt-8 pt-8 text-center">
+       <p class="text-gray-400 text-sm">© 2024 Tactical Gaming Blog. All rights reserved.</p>
+      </div>
+     </div>
+    </footer>
+   </div><!-- End Home Page --> <!-- News Page -->
+   <div id="news-page" class="page-content hidden">
+    <section class="py-16 bg-gray-800">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+       <h1 class="text-5xl font-bold mb-4"><span class="text-white">GAMING</span> <span class="text-orange-400">NEWS</span></h1>
+       <div class="w-24 h-1 bg-gradient-to-r from-orange-400 to-red-500 mx-auto mb-6"></div>
+       <p class="text-gray-300 text-lg max-w-3xl mx-auto">Stay ahead of the competition with the latest gaming news, updates, and breaking stories from the world of competitive gaming.</p>
+      </div>
+     </div>
+    </section><!-- Breaking News -->
+    <section class="py-12 bg-gray-900">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center mb-8"><span class="bg-red-600 text-white px-4 py-2 font-bold text-sm rounded-l pulse-glow">BREAKING</span>
+       <div class="bg-gray-700 px-4 py-2 text-white font-semibold rounded-r flex-1">
+        Major Tournament Announced: $2M Prize Pool
+       </div>
+      </div>
+      <div class="grid lg:grid-cols-3 gap-8"><!-- Main News Article -->
+       <div class="lg:col-span-2">
+        <article class="bg-gray-800 rounded-lg overflow-hidden border border-gray-700">
+         <div class="h-64 bg-gradient-to-br from-purple-600 to-blue-700 flex items-center justify-center">
+          <div class="text-center text-white">
+           <svg class="w-20 h-20 mx-auto mb-4" fill="currentColor" viewbox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+           </svg>
+           <p class="text-sm opacity-75">FEATURED NEWS</p>
+          </div>
+         </div>
+         <div class="p-6">
+          <div class="flex items-center mb-4"><span class="bg-red-500 text-white px-3 py-1 text-xs font-bold rounded">BREAKING</span> <span class="text-gray-400 text-sm ml-4">2 hours ago</span>
+          </div>
+          <h2 class="text-2xl font-bold mb-4 text-white">World Championship 2024: Biggest Prize Pool in Gaming History</h2>
+          <p class="text-gray-300 mb-6 leading-relaxed">The gaming world is buzzing with excitement as organizers announce the largest prize pool ever seen in competitive gaming. With $2 million up for grabs, teams from around the globe are preparing for the ultimate showdown. Registration opens next week with qualifying rounds starting in January.</p><button class="bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-2 font-semibold rounded hover:from-orange-600 hover:to-red-700 transition-all"> READ FULL STORY → </button>
+         </div>
+        </article>
+       </div><!-- Sidebar News -->
+       <div class="space-y-6">
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+         <h3 class="text-lg font-bold text-white mb-4">TRENDING NOW</h3>
+         <div class="space-y-4">
+          <div class="flex items-start space-x-3"><span class="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">1</span>
+           <div>
+            <h4 class="text-white font-semibold text-sm mb-1">New Map Rotation Announced</h4>
+            <p class="text-gray-400 text-xs">45 min ago</p>
+           </div>
+          </div>
+          <div class="flex items-start space-x-3"><span class="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">2</span>
+           <div>
+            <h4 class="text-white font-semibold text-sm mb-1">Pro Player Retirement Shock</h4>
+            <p class="text-gray-400 text-xs">1 hour ago</p>
+           </div>
+          </div>
+          <div class="flex items-start space-x-3"><span class="bg-orange-500 text-white text-xs font-bold px-2 py-1 rounded">3</span>
+           <div>
+            <h4 class="text-white font-semibold text-sm mb-1">Mobile Gaming Revenue Hits Record</h4>
+            <p class="text-gray-400 text-xs">2 hours ago</p>
+           </div>
+          </div>
+         </div>
+        </div>
+        <div class="bg-gray-800 rounded-lg p-6 border border-gray-700">
+         <h3 class="text-lg font-bold text-white mb-4">QUICK UPDATES</h3>
+         <div class="space-y-3 text-sm">
+          <p class="text-gray-300">🔥 Server maintenance scheduled for tonight</p>
+          <p class="text-gray-300">⚡ New weapon skins available in store</p>
+          <p class="text-gray-300">🏆 Weekend tournament registration open</p>
+          <p class="text-gray-300">📱 Mobile app update rolling out</p>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section><!-- Latest News Grid -->
+    <section class="py-16 bg-gray-800">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-bold mb-8 text-center"><span class="text-white">LATEST</span> <span class="text-orange-400">STORIES</span></h2>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+       <article class="bg-gray-900 rounded-lg overflow-hidden card-hover border border-gray-700">
+        <div class="h-48 bg-gradient-to-br from-green-600 to-emerald-700 flex items-center justify-center">
+         <svg class="w-16 h-16 text-white" fill="currentColor" viewbox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+         </svg>
+        </div>
+        <div class="p-6">
+         <div class="flex items-center mb-3"><span class="bg-green-500 text-white px-2 py-1 text-xs font-bold rounded">ESPORTS</span> <span class="text-gray-400 text-sm ml-3">3 hours ago</span>
+         </div>
+         <h3 class="text-xl font-bold mb-3 text-white">Team Phoenix Signs New Star Player</h3>
+         <p class="text-gray-300 text-sm mb-4">Professional team makes major roster change ahead of upcoming season.</p><button class="text-orange-400 font-semibold text-sm hover:text-orange-300 transition-colors"> READ MORE → </button>
+        </div>
+       </article>
+       <article class="bg-gray-900 rounded-lg overflow-hidden card-hover border border-gray-700">
+        <div class="h-48 bg-gradient-to-br from-blue-600 to-cyan-700 flex items-center justify-center">
+         <svg class="w-16 h-16 text-white" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+         </svg>
+        </div>
+        <div class="p-6">
+         <div class="flex items-center mb-3"><span class="bg-blue-500 text-white px-2 py-1 text-xs font-bold rounded">UPDATE</span> <span class="text-gray-400 text-sm ml-3">5 hours ago</span>
+         </div>
+         <h3 class="text-xl font-bold mb-3 text-white">Game Engine Optimization Improves Performance</h3>
+         <p class="text-gray-300 text-sm mb-4">Latest patch delivers significant FPS improvements across all devices.</p><button class="text-orange-400 font-semibold text-sm hover:text-orange-300 transition-colors"> READ MORE → </button>
+        </div>
+       </article>
+       <article class="bg-gray-900 rounded-lg overflow-hidden card-hover border border-gray-700">
+        <div class="h-48 bg-gradient-to-br from-purple-600 to-pink-700 flex items-center justify-center">
+         <svg class="w-16 h-16 text-white" fill="currentColor" viewbox="0 0 20 20"><path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+         </svg>
+        </div>
+        <div class="p-6">
+         <div class="flex items-center mb-3"><span class="bg-purple-500 text-white px-2 py-1 text-xs font-bold rounded">FEATURE</span> <span class="text-gray-400 text-sm ml-3">8 hours ago</span>
+         </div>
+         <h3 class="text-xl font-bold mb-3 text-white">New Spectator Mode Enhances Viewing Experience</h3>
+         <p class="text-gray-300 text-sm mb-4">Enhanced camera controls and replay features for tournament broadcasts.</p><button class="text-orange-400 font-semibold text-sm hover:text-orange-300 transition-colors"> READ MORE → </button>
+        </div>
+       </article>
+      </div>
+     </div>
+    </section>
+   </div><!-- End News Page --> <!-- About Us Page -->
+   <div id="about-page" class="page-content hidden">
+    <section class="py-16 bg-gray-800">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+       <h1 class="text-5xl font-bold mb-4"><span class="text-white">ABOUT</span> <span class="text-orange-400">US</span></h1>
+       <div class="w-24 h-1 bg-gradient-to-r from-orange-400 to-red-500 mx-auto mb-6"></div>
+       <p class="text-gray-300 text-lg max-w-3xl mx-auto">We are passionate gamers dedicated to bringing you the most comprehensive gaming content, strategies, and community insights.</p>
+      </div>
+     </div>
+    </section><!-- Mission Section -->
+    <section class="py-16 bg-gray-900">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+       <div>
+        <h2 class="text-4xl font-bold mb-6"><span class="text-orange-400">OUR</span> <span class="text-white">MISSION</span></h2>
+        <p class="text-gray-300 text-lg mb-6 leading-relaxed">At Tactical Gaming Blog, we believe that every gamer deserves access to high-quality content that helps them improve their skills and enjoy their favorite games to the fullest. Our mission is to create a comprehensive resource for gamers of all skill levels.</p>
+        <p class="text-gray-300 text-lg mb-8 leading-relaxed">From beginner guides to advanced strategies, from breaking news to in-depth analysis, we cover everything you need to stay ahead in the competitive gaming world.</p>
+        <div class="grid grid-cols-2 gap-6">
+         <div class="text-center">
+          <div class="text-3xl font-bold text-orange-400 mb-2">
+           500K+
+          </div>
+          <div class="text-gray-300">
+           Monthly Readers
+          </div>
+         </div>
+         <div class="text-center">
+          <div class="text-3xl font-bold text-orange-400 mb-2">
+           1000+
+          </div>
+          <div class="text-gray-300">
+           Articles Published
+          </div>
+         </div>
+        </div>
+       </div>
+       <div class="bg-gray-800 rounded-lg p-8 border border-gray-700">
+        <div class="text-center">
+         <div class="w-32 h-32 bg-gradient-to-br from-orange-500 to-red-600 rounded-full mx-auto mb-6 flex items-center justify-center">
+          <svg class="w-16 h-16 text-white" fill="currentColor" viewbox="0 0 20 20"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+         </div>
+         <h3 class="text-2xl font-bold text-white mb-4">Quality Content</h3>
+         <p class="text-gray-300">Every article is researched, tested, and verified by our team of experienced gamers and esports professionals.</p>
+        </div>
+       </div>
+      </div>
+     </div>
+    </section><!-- Team Section -->
+    <section class="py-16 bg-gray-800">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+       <h2 class="text-4xl font-bold mb-4"><span class="text-white">OUR</span> <span class="text-orange-400">TEAM</span></h2>
+       <div class="w-24 h-1 bg-gradient-to-r from-orange-400 to-red-500 mx-auto"></div>
+      </div>
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"><!-- Team Member 1 -->
+       <div class="bg-gray-900 rounded-lg p-6 text-center border border-gray-700 card-hover">
+        <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full mx-auto mb-4 flex items-center justify-center"><span class="text-white text-2xl font-bold">AX</span>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">Alex Chen</h3>
+        <p class="text-orange-400 font-semibold mb-3">Lead Editor &amp; Pro Player</p>
+        <p class="text-gray-300 text-sm">Former professional player with 5+ years of competitive experience. Specializes in strategy guides and meta analysis.</p>
+       </div><!-- Team Member 2 -->
+       <div class="bg-gray-900 rounded-lg p-6 text-center border border-gray-700 card-hover">
+        <div class="w-24 h-24 bg-gradient-to-br from-green-500 to-teal-600 rounded-full mx-auto mb-4 flex items-center justify-center"><span class="text-white text-2xl font-bold">SM</span>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">Sarah Martinez</h3>
+        <p class="text-orange-400 font-semibold mb-3">Content Creator &amp; Analyst</p>
+        <p class="text-gray-300 text-sm">Gaming journalist with expertise in mobile gaming trends and community management. Creates engaging video content.</p>
+       </div><!-- Team Member 3 -->
+       <div class="bg-gray-900 rounded-lg p-6 text-center border border-gray-700 card-hover">
+        <div class="w-24 h-24 bg-gradient-to-br from-red-500 to-orange-600 rounded-full mx-auto mb-4 flex items-center justify-center"><span class="text-white text-2xl font-bold">MJ</span>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-2">Mike Johnson</h3>
+        <p class="text-orange-400 font-semibold mb-3">Technical Writer &amp; Developer</p>
+        <p class="text-gray-300 text-sm">Software developer turned gaming writer. Focuses on technical guides, optimization tips, and game mechanics.</p>
+       </div>
+      </div>
+     </div>
+    </section><!-- Values Section -->
+    <section class="py-16 bg-gray-900">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+       <h2 class="text-4xl font-bold mb-4"><span class="text-white">OUR</span> <span class="text-orange-400">VALUES</span></h2>
+       <div class="w-24 h-1 bg-gradient-to-r from-orange-400 to-red-500 mx-auto"></div>
+      </div>
+      <div class="grid md:grid-cols-3 gap-8">
+       <div class="text-center">
+        <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
+         <svg class="w-8 h-8 text-white" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+         </svg>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">Authenticity</h3>
+        <p class="text-gray-300">We test every strategy and verify every tip before sharing it with our community.</p>
+       </div>
+       <div class="text-center">
+        <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
+         <svg class="w-8 h-8 text-white" fill="currentColor" viewbox="0 0 20 20"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+         </svg>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">Community</h3>
+        <p class="text-gray-300">Building a supportive community where gamers can learn, share, and grow together.</p>
+       </div>
+       <div class="text-center">
+        <div class="w-16 h-16 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
+         <svg class="w-8 h-8 text-white" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+         </svg>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">Excellence</h3>
+        <p class="text-gray-300">Continuously improving our content quality and staying ahead of gaming trends.</p>
+       </div>
+      </div>
+     </div>
+    </section><!-- Contact Section -->
+    <section class="py-16 bg-gray-800">
+     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl font-bold mb-4"><span class="text-white">GET IN</span> <span class="text-orange-400">TOUCH</span></h2>
+      <p class="text-gray-300 mb-8 text-lg">Have a question, suggestion, or want to collaborate? We'd love to hear from you!</p>
+      <div class="grid md:grid-cols-3 gap-6 mb-8">
+       <div class="bg-gray-900 rounded-lg p-6 border border-gray-700">
+        <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
+         <svg class="w-6 h-6 text-white" fill="currentColor" viewbox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" /> <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+         </svg>
+        </div>
+        <h3 class="text-white font-semibold mb-2">Email Us</h3>
+        <p class="text-gray-300 text-sm">contact@tacticalgaming.blog</p>
+       </div>
+       <div class="bg-gray-900 rounded-lg p-6 border border-gray-700">
+        <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
+         <svg class="w-6 h-6 text-white" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
+         </svg>
+        </div>
+        <h3 class="text-white font-semibold mb-2">Discord</h3>
+        <p class="text-gray-300 text-sm">Join our community server</p>
+       </div>
+       <div class="bg-gray-900 rounded-lg p-6 border border-gray-700">
+        <div class="w-12 h-12 bg-gradient-to-br from-orange-500 to-red-600 rounded-lg mx-auto mb-4 flex items-center justify-center">
+         <svg class="w-6 h-6 text-white" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd" />
+         </svg>
+        </div>
+        <h3 class="text-white font-semibold mb-2">Social Media</h3>
+        <p class="text-gray-300 text-sm">Follow us for updates</p>
+       </div>
+      </div><button class="bg-gradient-to-r from-orange-500 to-red-600 text-white px-8 py-3 font-bold rounded hover:from-orange-600 hover:to-red-700 transition-all glow-effect"> SEND MESSAGE </button>
+     </div>
+    </section>
+   </div><!-- End About Us Page --> <!-- Login Page -->
+   <div id="login-page" class="page-content hidden">
+    <section class="min-h-screen flex items-center justify-center bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+     <div class="max-w-md w-full space-y-8">
+      <div class="text-center">
+       <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-full mx-auto mb-6 flex items-center justify-center"><span class="text-white font-bold text-3xl">G</span>
+       </div>
+       <h2 class="text-4xl font-bold text-white mb-2">Welcome Back</h2>
+       <p class="text-gray-400">Sign in to your gaming account</p>
+      </div>
+      <form class="mt-8 space-y-6" onsubmit="handleLogin(event)">
+       <div class="space-y-4">
+        <div><label for="login-email" class="block text-sm font-medium text-gray-300 mb-2">Email Address</label> <input id="login-email" name="email" type="email" required class="form-input w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400" placeholder="Enter your email">
+        </div>
+        <div><label for="login-password" class="block text-sm font-medium text-gray-300 mb-2">Password</label> <input id="login-password" name="password" type="password" required class="form-input w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400" placeholder="Enter your password">
+        </div>
+       </div>
+       <div class="flex items-center justify-between">
+        <div class="flex items-center"><input id="remember-me" name="remember-me" type="checkbox" class="h-4 w-4 text-orange-500 focus:ring-orange-500 border-gray-600 rounded bg-gray-800"> <label for="remember-me" class="ml-2 block text-sm text-gray-300">Remember me</label>
+        </div>
+        <div class="text-sm"><a href="#" class="text-orange-400 hover:text-orange-300 transition-colors">Forgot password?</a>
+        </div>
+       </div>
+       <div><button type="submit" id="login-btn" class="w-full btn-primary"> <span class="login-text">SIGN IN</span> <span class="loading-spinner hidden"></span> </button>
+       </div>
+       <div class="text-center">
+        <p class="text-gray-400">Don't have an account? <button type="button" onclick="showPage('signup')" class="text-orange-400 hover:text-orange-300 transition-colors font-semibold">Sign up</button></p>
+       </div>
+      </form>
+     </div>
+    </section>
+   </div><!-- End Login Page --> <!-- Signup Page -->
+   <div id="signup-page" class="page-content hidden">
+    <section class="min-h-screen flex items-center justify-center bg-gray-900 py-12 px-4 sm:px-6 lg:px-8">
+     <div class="max-w-md w-full space-y-8">
+      <div class="text-center">
+       <div class="w-20 h-20 bg-gradient-to-br from-orange-500 to-red-600 rounded-full mx-auto mb-6 flex items-center justify-center"><span class="text-white font-bold text-3xl">G</span>
+       </div>
+       <h2 class="text-4xl font-bold text-white mb-2">Join the Community</h2>
+       <p class="text-gray-400">Create your gaming account today</p>
+      </div>
+      <form class="mt-8 space-y-6" onsubmit="handleSignup(event)">
+       <div class="space-y-4">
+        <div><label for="signup-username" class="block text-sm font-medium text-gray-300 mb-2">Username</label> <input id="signup-username" name="username" type="text" required class="form-input w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400" placeholder="Choose a username">
+        </div>
+        <div><label for="signup-email" class="block text-sm font-medium text-gray-300 mb-2">Email Address</label> <input id="signup-email" name="email" type="email" required class="form-input w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400" placeholder="Enter your email">
+        </div>
+        <div><label for="signup-password" class="block text-sm font-medium text-gray-300 mb-2">Password</label> <input id="signup-password" name="password" type="password" required class="form-input w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400" placeholder="Create a password">
+        </div>
+        <div><label for="confirm-password" class="block text-sm font-medium text-gray-300 mb-2">Confirm Password</label> <input id="confirm-password" name="confirm-password" type="password" required class="form-input w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400" placeholder="Confirm your password">
+        </div>
+       </div>
+       <div class="flex items-center"><input id="terms" name="terms" type="checkbox" required class="h-4 w-4 text-orange-500 focus:ring-orange-500 border-gray-600 rounded bg-gray-800"> <label for="terms" class="ml-2 block text-sm text-gray-300"> I agree to the <a href="#" class="text-orange-400 hover:text-orange-300">Terms of Service</a> and <a href="#" class="text-orange-400 hover:text-orange-300">Privacy Policy</a> </label>
+       </div>
+       <div><button type="submit" id="signup-btn" class="w-full btn-primary"> <span class="signup-text">CREATE ACCOUNT</span> <span class="loading-spinner hidden"></span> </button>
+       </div>
+       <div class="text-center">
+        <p class="text-gray-400">Already have an account? <button type="button" onclick="showPage('login')" class="text-orange-400 hover:text-orange-300 transition-colors font-semibold">Sign in</button></p>
+       </div>
+      </form>
+     </div>
+    </section>
+   </div><!-- End Signup Page --> <!-- Blogs Page -->
+   <div id="blogs-page" class="page-content hidden">
+    <section class="py-16 bg-gray-800">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+       <h1 class="text-5xl font-bold mb-4"><span class="text-white">GAMING</span> <span class="text-orange-400">BLOGS</span></h1>
+       <div class="w-24 h-1 bg-gradient-to-r from-orange-400 to-red-500 mx-auto mb-6"></div>
+       <p class="text-gray-300 text-lg max-w-3xl mx-auto">Explore our comprehensive collection of gaming guides, strategies, and insights from professional players.</p>
+      </div>
+     </div>
+    </section><!-- Category Filter -->
+    <section class="py-8 bg-gray-900">
+     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-wrap justify-center gap-4 mb-8"><button onclick="filterBlogs('all')" class="category-filter active bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-2 rounded-full font-semibold hover:from-orange-600 hover:to-red-700 transition-all"> All Posts </button> <button onclick="filterBlogs('strategy')" class="category-filter bg-gray-700 text-gray-300 px-6 py-2 rounded-full font-semibold hover:bg-gray-600 hover:text-white transition-all"> Strategy </button> <button onclick="filterBlogs('guides')" class="category-filter bg-gray-700 text-gray-300 px-6 py-2 rounded-full font-semibold hover:bg-gray-600 hover:text-white transition-all"> Guides </button> <button onclick="filterBlogs('reviews')" class="category-filter bg-gray-700 text-gray-300 px-6 py-2 rounded-full font-semibold hover:bg-gray-600 hover:text-white transition-all"> Reviews </button> <button onclick="filterBlogs('esports')" class="category-filter bg-gray-700 text-gray-300 px-6 py-2 rounded-full font-semibold hover:bg-gray-600 hover:text-white transition-all"> Esports </button> <button onclick="filterBlogs('updates')" class="category-filter bg-gray-700 text-gray-300 px-6 py-2 rounded-full font-semibold hover:bg-gray-600 hover:text-white transition-all"> Updates </button>
+      </div><!-- Blog Grid -->
+      <div id="blog-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"><!-- Blog posts will be populated by JavaScript -->
+      </div>
+     </div>
+    </section>
+   </div><!-- End Blogs Page --> <!-- Full Blog Page -->
+   <div id="full-blog-page" class="page-content hidden">
+    <article class="py-16 bg-gray-800">
+     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8"><!-- Blog Header -->
+      <div class="mb-8"><button onclick="showPage('blogs')" class="text-orange-400 hover:text-orange-300 transition-colors mb-4 flex items-center">
+        <svg class="w-4 h-4 mr-2" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+        </svg> Back to Blogs </button>
+       <div class="flex items-center mb-4"><span id="full-blog-category" class="bg-orange-500 text-black px-3 py-1 text-sm font-bold rounded mr-4">STRATEGY</span> <span id="full-blog-date" class="text-gray-400 text-sm">December 15, 2024</span>
+       </div>
+       <h1 id="full-blog-title" class="text-4xl md:text-5xl font-bold text-white mb-4 leading-tight">Master the New Battle Royale Map: Advanced Tactics and Hidden Locations</h1>
+       <div class="flex items-center space-x-4 text-gray-400 text-sm">
+        <div class="flex items-center">
+         <div class="w-8 h-8 bg-gradient-to-br from-orange-500 to-red-600 rounded-full mr-2 flex items-center justify-center"><span class="text-white text-xs font-bold">AC</span>
+         </div><span>Alex Chen</span>
+        </div><span>•</span> <span>8 min read</span> <span>•</span> <span>2.5K views</span>
+       </div>
+      </div><!-- Featured Image -->
+      <div class="h-64 md:h-96 bg-gradient-to-br from-purple-600 to-blue-700 rounded-lg mb-8 flex items-center justify-center">
+       <div class="text-center text-white">
+        <svg class="w-20 h-20 mx-auto mb-4" fill="currentColor" viewbox="0 0 20 20"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <p class="text-lg opacity-75">Featured Article Image</p>
+       </div>
+      </div><!-- Blog Content -->
+      <div id="full-blog-content" class="prose prose-lg prose-invert max-w-none">
+       <p class="text-xl text-gray-300 mb-6 leading-relaxed">The latest battle royale map update has completely changed the competitive landscape. With new locations, updated loot spawns, and strategic chokepoints, mastering this map is crucial for climbing the ranks.</p>
+       <h2 class="text-2xl font-bold text-white mt-8 mb-4">Key Landing Zones</h2>
+       <p class="text-gray-300 mb-4 leading-relaxed">Understanding where to land is the foundation of any successful match. The new map features several high-tier loot locations that can give you the early game advantage you need.</p>
+       <h3 class="text-xl font-bold text-white mt-6 mb-3">1. Central Command Complex</h3>
+       <p class="text-gray-300 mb-4 leading-relaxed">Located at the heart of the map, this military facility offers the highest tier weapons and armor. However, expect heavy competition as it's a popular drop zone for experienced players.</p>
+       <h3 class="text-xl font-bold text-white mt-6 mb-3">2. Northern Research Facility</h3>
+       <p class="text-gray-300 mb-4 leading-relaxed">A quieter alternative with decent loot and multiple escape routes. Perfect for players who prefer a more strategic approach to the early game.</p>
+       <h2 class="text-2xl font-bold text-white mt-8 mb-4">Advanced Movement Techniques</h2>
+       <p class="text-gray-300 mb-4 leading-relaxed">The new map's terrain offers unique opportunities for advanced movement. Mastering these techniques will give you a significant advantage in both positioning and combat.</p>
+       <h3 class="text-xl font-bold text-white mt-6 mb-3">Zipline Combinations</h3>
+       <p class="text-gray-300 mb-4 leading-relaxed">The updated zipline network allows for complex rotations. Learning the optimal zipline routes can help you reach advantageous positions quickly while avoiding common camping spots.</p>
+       <h2 class="text-2xl font-bold text-white mt-8 mb-4">Hidden Loot Locations</h2>
+       <p class="text-gray-300 mb-4 leading-relaxed">Beyond the obvious loot spawns, the map contains several hidden caches that most players overlook. These secret locations can provide crucial upgrades without the risk of contested drops.</p>
+       <h3 class="text-xl font-bold text-white mt-6 mb-3">Underground Bunkers</h3>
+       <p class="text-gray-300 mb-4 leading-relaxed">Three hidden bunkers are scattered across the map, each containing high-tier loot and unique weapons. Access requires finding specific keycards or solving environmental puzzles.</p>
+       <h2 class="text-2xl font-bold text-white mt-8 mb-4">End Game Strategies</h2>
+       <p class="text-gray-300 mb-4 leading-relaxed">The final circles on this map tend to favor teams with strong positioning and long-range capabilities. Understanding the terrain and common final circle locations is essential for consistent wins.</p>
+       <div class="bg-gray-900 border border-gray-700 rounded-lg p-6 mt-8">
+        <h3 class="text-xl font-bold text-orange-400 mb-3">Pro Tip</h3>
+        <p class="text-gray-300">Always carry at least one long-range weapon when rotating to potential final circle areas. The elevated positions and open sightlines make close-range builds less effective in the late game.</p>
+       </div>
+       <h2 class="text-2xl font-bold text-white mt-8 mb-4">Conclusion</h2>
+       <p class="text-gray-300 mb-4 leading-relaxed">Mastering the new battle royale map requires patience, practice, and strategic thinking. Focus on learning one landing zone thoroughly before expanding to others, and always prioritize positioning over aggressive plays in the early stages of your learning process.</p>
+      </div><!-- Article Footer -->
+      <div class="border-t border-gray-700 pt-8 mt-8">
+       <div class="flex items-center justify-between">
+        <div class="flex space-x-4"><button class="flex items-center space-x-2 text-gray-400 hover:text-orange-400 transition-colors">
+          <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"><path d="M2 10.5a1.5 1.5 0 113 0v6a1.5 1.5 0 01-3 0v-6zM6 10.333v5.43a2 2 0 001.106 1.79l.05.025A4 4 0 008.943 18h5.416a2 2 0 001.962-1.608l1.2-6A2 2 0 0015.56 8H12V4a2 2 0 00-2-2 1 1 0 00-1 1v.667a4 4 0 01-.8 2.4L6.8 7.933a4 4 0 00-.8 2.4z" />
+          </svg><span>245 Likes</span> </button> <button class="flex items-center space-x-2 text-gray-400 hover:text-orange-400 transition-colors">
+          <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd" />
+          </svg><span>32 Comments</span> </button> <button class="flex items-center space-x-2 text-gray-400 hover:text-orange-400 transition-colors">
+          <svg class="w-5 h-5" fill="currentColor" viewbox="0 0 20 20"><path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z" />
+          </svg><span>Share</span> </button>
+        </div>
+       </div>
+      </div>
+     </div>
+    </article>
+   </div><!-- End Full Blog Page -->
+  </div>
+  <script>
+        const defaultConfig = {
+            blog_title: "TACTICAL GAMING BLOG",
+            tagline: "LATEST GAMING NEWS & STRATEGIES",
+            featured_title: "Master the New Battle Royale Map: Advanced Tactics and Hidden Locations",
+            featured_excerpt: "Discover the secret strategies and hidden loot spots that will give you the competitive edge in the latest battle royale update. From optimal landing zones to advanced movement techniques.",
+            article_1_title: "Season 12 Weapon Balance Changes: What You Need to Know",
+            article_2_title: "Pro Player Loadouts: Copy the Best Configurations",
+            background_color: "#111827",
+            surface_color: "#1f2937",
+            text_color: "#ffffff",
+            primary_action_color: "#f97316",
+            secondary_action_color: "#fb923c",
+            font_family: "Inter",
+            font_size: 16
+        };
+
+        async function onConfigChange(config) {
+            // Update text content
+            document.getElementById('blog-title').textContent = config.blog_title || defaultConfig.blog_title;
+            document.getElementById('tagline').textContent = config.tagline || defaultConfig.tagline;
+            document.getElementById('featured-title').textContent = config.featured_title || defaultConfig.featured_title;
+            document.getElementById('featured-excerpt').textContent = config.featured_excerpt || defaultConfig.featured_excerpt;
+            document.getElementById('article-1-title').textContent = config.article_1_title || defaultConfig.article_1_title;
+            document.getElementById('article-2-title').textContent = config.article_2_title || defaultConfig.article_2_title;
+
+            // Update colors
+            const backgroundColor = config.background_color || defaultConfig.background_color;
+            const surfaceColor = config.surface_color || defaultConfig.surface_color;
+            const textColor = config.text_color || defaultConfig.text_color;
+            const primaryActionColor = config.primary_action_color || defaultConfig.primary_action_color;
+            const secondaryActionColor = config.secondary_action_color || defaultConfig.secondary_action_color;
+
+            document.body.style.backgroundColor = backgroundColor;
+            
+            // Update surface colors
+            const surfaces = document.querySelectorAll('.bg-gray-800, .bg-gray-900');
+            surfaces.forEach(el => el.style.backgroundColor = surfaceColor);
+
+            // Update text colors
+            const textElements = document.querySelectorAll('.text-white');
+            textElements.forEach(el => el.style.color = textColor);
+
+            // Update primary action colors
+            const primaryButtons = document.querySelectorAll('.bg-gradient-to-r.from-orange-500');
+            primaryButtons.forEach(el => el.style.background = `linear-gradient(to right, ${primaryActionColor}, ${secondaryActionColor})`);
+
+            // Update font
+            const customFont = config.font_family || defaultConfig.font_family;
+            const baseFontStack = 'system-ui, -apple-system, sans-serif';
+            document.body.style.fontFamily = `${customFont}, ${baseFontStack}`;
+
+            // Update font sizes
+            const baseSize = config.font_size || defaultConfig.font_size;
+            document.getElementById('blog-title').style.fontSize = `${baseSize * 1.5}px`;
+            document.getElementById('tagline').style.fontSize = `${baseSize * 1.125}px`;
+            document.getElementById('featured-title').style.fontSize = `${baseSize * 1.5}px`;
+            document.getElementById('featured-excerpt').style.fontSize = `${baseSize}px`;
+        }
+
+        function mapToCapabilities(config) {
+            return {
+                recolorables: [
+                    {
+                        get: () => config.background_color || defaultConfig.background_color,
+                        set: (value) => {
+                            config.background_color = value;
+                            window.elementSdk.setConfig({ background_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.surface_color || defaultConfig.surface_color,
+                        set: (value) => {
+                            config.surface_color = value;
+                            window.elementSdk.setConfig({ surface_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.text_color || defaultConfig.text_color,
+                        set: (value) => {
+                            config.text_color = value;
+                            window.elementSdk.setConfig({ text_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.primary_action_color || defaultConfig.primary_action_color,
+                        set: (value) => {
+                            config.primary_action_color = value;
+                            window.elementSdk.setConfig({ primary_action_color: value });
+                        }
+                    },
+                    {
+                        get: () => config.secondary_action_color || defaultConfig.secondary_action_color,
+                        set: (value) => {
+                            config.secondary_action_color = value;
+                            window.elementSdk.setConfig({ secondary_action_color: value });
+                        }
+                    }
+                ],
+                borderables: [],
+                fontEditable: {
+                    get: () => config.font_family || defaultConfig.font_family,
+                    set: (value) => {
+                        config.font_family = value;
+                        window.elementSdk.setConfig({ font_family: value });
+                    }
+                },
+                fontSizeable: {
+                    get: () => config.font_size || defaultConfig.font_size,
+                    set: (value) => {
+                        config.font_size = value;
+                        window.elementSdk.setConfig({ font_size: value });
+                    }
+                }
+            };
+        }
+
+        function mapToEditPanelValues(config) {
+            return new Map([
+                ["blog_title", config.blog_title || defaultConfig.blog_title],
+                ["tagline", config.tagline || defaultConfig.tagline],
+                ["featured_title", config.featured_title || defaultConfig.featured_title],
+                ["featured_excerpt", config.featured_excerpt || defaultConfig.featured_excerpt],
+                ["article_1_title", config.article_1_title || defaultConfig.article_1_title],
+                ["article_2_title", config.article_2_title || defaultConfig.article_2_title]
+            ]);
+        }
+
+        // Page Navigation
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(page => page.classList.add('hidden'));
+            
+            // Show selected page
+            const targetPage = document.getElementById(pageId + '-page');
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+            }
+            
+            // Update navigation active state
+            const navLinks = document.querySelectorAll('.nav-link');
+            navLinks.forEach(link => {
+                link.classList.remove('text-orange-400');
+                link.classList.add('text-gray-300');
+            });
+            
+            // Highlight active nav item
+            const activeLink = document.querySelector(`[onclick="showPage('${pageId}')"]`);
+            if (activeLink) {
+                activeLink.classList.remove('text-gray-300');
+                activeLink.classList.add('text-orange-400');
+            }
+        }
+
+        // Blog data
+        const blogPosts = [
+            {
+                id: 1,
+                title: "Master the New Battle Royale Map: Advanced Tactics and Hidden Locations",
+                excerpt: "Discover the secret strategies and hidden loot spots that will give you the competitive edge in the latest battle royale update.",
+                category: "strategy",
+                author: "Alex Chen",
+                date: "December 15, 2024",
+                readTime: "8 min read",
+                views: "2.5K",
+                likes: 245,
+                comments: 32,
+                gradient: "from-purple-600 to-blue-700"
+            },
+            {
+                id: 2,
+                title: "Season 12 Weapon Balance Changes: Complete Analysis",
+                excerpt: "Complete breakdown of all weapon adjustments, nerfs, and buffs in the latest season update with pro player insights.",
+                category: "updates",
+                author: "Sarah Martinez",
+                date: "December 14, 2024",
+                readTime: "6 min read",
+                views: "1.8K",
+                likes: 189,
+                comments: 24,
+                gradient: "from-blue-600 to-cyan-700"
+            },
+            {
+                id: 3,
+                title: "Pro Player Loadouts: Copy the Best Configurations",
+                excerpt: "Detailed analysis of professional player weapon setups and attachment combinations used in tournaments.",
+                category: "guides",
+                author: "Mike Johnson",
+                date: "December 13, 2024",
+                readTime: "10 min read",
+                views: "3.2K",
+                likes: 312,
+                comments: 45,
+                gradient: "from-green-600 to-teal-700"
+            },
+            {
+                id: 4,
+                title: "Mobile Gaming Revolution: Top 10 Games of 2024",
+                excerpt: "Comprehensive review of the most innovative and engaging mobile games that defined this year.",
+                category: "reviews",
+                author: "Alex Chen",
+                date: "December 12, 2024",
+                readTime: "12 min read",
+                views: "4.1K",
+                likes: 428,
+                comments: 67,
+                gradient: "from-red-600 to-orange-700"
+            },
+            {
+                id: 5,
+                title: "Esports Championship 2024: Tournament Breakdown",
+                excerpt: "Everything you need to know about the upcoming world championship tournament and prize distribution.",
+                category: "esports",
+                author: "Sarah Martinez",
+                date: "December 11, 2024",
+                readTime: "7 min read",
+                views: "2.9K",
+                likes: 267,
+                comments: 38,
+                gradient: "from-purple-600 to-pink-700"
+            },
+            {
+                id: 6,
+                title: "Advanced Movement Techniques for Competitive Play",
+                excerpt: "Master the complex movement mechanics that separate professional players from casual gamers.",
+                category: "strategy",
+                author: "Mike Johnson",
+                date: "December 10, 2024",
+                readTime: "9 min read",
+                views: "2.1K",
+                likes: 198,
+                comments: 29,
+                gradient: "from-indigo-600 to-purple-700"
+            },
+            {
+                id: 7,
+                title: "Game Engine Optimization: Performance Guide",
+                excerpt: "Latest patch delivers significant FPS improvements across all devices. Learn how to maximize your performance.",
+                category: "guides",
+                author: "Alex Chen",
+                date: "December 9, 2024",
+                readTime: "11 min read",
+                views: "1.7K",
+                likes: 156,
+                comments: 22,
+                gradient: "from-teal-600 to-green-700"
+            },
+            {
+                id: 8,
+                title: "Team Communication Strategies for Victory",
+                excerpt: "Professional team communication tactics and callout systems used by top esports organizations.",
+                category: "esports",
+                author: "Sarah Martinez",
+                date: "December 8, 2024",
+                readTime: "8 min read",
+                views: "2.3K",
+                likes: 234,
+                comments: 41,
+                gradient: "from-orange-600 to-red-700"
+            },
+            {
+                id: 9,
+                title: "Hardware Review: Best Gaming Peripherals 2024",
+                excerpt: "Comprehensive testing and review of the latest gaming mice, keyboards, and headsets for competitive play.",
+                category: "reviews",
+                author: "Mike Johnson",
+                date: "December 7, 2024",
+                readTime: "15 min read",
+                views: "3.8K",
+                likes: 389,
+                comments: 56,
+                gradient: "from-cyan-600 to-blue-700"
+            }
+        ];
+
+        // Mobile menu functions
+        function toggleMobileMenu() {
+            const mobileMenu = document.getElementById('mobile-menu');
+            const backdrop = document.getElementById('mobile-backdrop');
+            
+            if (mobileMenu.classList.contains('open')) {
+                mobileMenu.classList.remove('open');
+                backdrop.classList.add('hidden');
+                document.body.style.overflow = '';
+            } else {
+                mobileMenu.classList.add('open');
+                backdrop.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // Enhanced authentication functions with loading states
+        async function handleLogin(event) {
+            event.preventDefault();
+            const email = document.getElementById('login-email').value;
+            const password = document.getElementById('login-password').value;
+            const loginBtn = document.getElementById('login-btn');
+            const loginText = loginBtn.querySelector('.login-text');
+            const spinner = loginBtn.querySelector('.loading-spinner');
+            
+            if (!email || !password) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+            
+            // Show loading state
+            loginBtn.disabled = true;
+            loginText.classList.add('hidden');
+            spinner.classList.remove('hidden');
+            
+            try {
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 1500));
+                
+                const username = email.split('@')[0];
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('username', username);
+                updateAuthUI();
+                showPage('home');
+                showToast('Successfully logged in!', 'success');
+            } catch (error) {
+                showToast('Login failed. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                loginBtn.disabled = false;
+                loginText.classList.remove('hidden');
+                spinner.classList.add('hidden');
+            }
+        }
+
+        async function handleSignup(event) {
+            event.preventDefault();
+            const username = document.getElementById('signup-username').value;
+            const email = document.getElementById('signup-email').value;
+            const password = document.getElementById('signup-password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+            const signupBtn = document.getElementById('signup-btn');
+            const signupText = signupBtn.querySelector('.signup-text');
+            const spinner = signupBtn.querySelector('.loading-spinner');
+            
+            // Validation
+            if (!username || !email || !password || !confirmPassword) {
+                showToast('Please fill in all fields', 'error');
+                return;
+            }
+            
+            if (password !== confirmPassword) {
+                showToast('Passwords do not match!', 'error');
+                return;
+            }
+            
+            if (password.length < 6) {
+                showToast('Password must be at least 6 characters', 'error');
+                return;
+            }
+            
+            // Show loading state
+            signupBtn.disabled = true;
+            signupText.classList.add('hidden');
+            spinner.classList.remove('hidden');
+            
+            try {
+                // Simulate API call delay
+                await new Promise(resolve => setTimeout(resolve, 2000));
+                
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('username', username);
+                updateAuthUI();
+                showPage('home');
+                showToast('Account created successfully!', 'success');
+            } catch (error) {
+                showToast('Signup failed. Please try again.', 'error');
+            } finally {
+                // Reset button state
+                signupBtn.disabled = false;
+                signupText.classList.remove('hidden');
+                spinner.classList.add('hidden');
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('username');
+            updateAuthUI();
+            showPage('home');
+            showToast('Successfully logged out!', 'success');
+        }
+
+        function updateAuthUI() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const username = localStorage.getItem('username');
+            
+            // Desktop navigation
+            const authButtons = document.getElementById('auth-buttons');
+            const userMenu = document.getElementById('user-menu');
+            const userNameSpan = document.getElementById('user-name');
+            
+            // Mobile navigation
+            const mobileAuthButtons = document.getElementById('mobile-auth-buttons');
+            const mobileUserMenu = document.getElementById('mobile-user-menu');
+            const mobileUserNameSpan = document.getElementById('mobile-user-name');
+            
+            if (isLoggedIn && username) {
+                // Desktop
+                authButtons.classList.add('hidden');
+                userMenu.classList.remove('hidden');
+                userNameSpan.textContent = username;
+                
+                // Mobile
+                mobileAuthButtons.classList.add('hidden');
+                mobileUserMenu.classList.remove('hidden');
+                mobileUserNameSpan.textContent = username;
+            } else {
+                // Desktop
+                authButtons.classList.remove('hidden');
+                userMenu.classList.add('hidden');
+                
+                // Mobile
+                mobileAuthButtons.classList.remove('hidden');
+                mobileUserMenu.classList.add('hidden');
+            }
+        }
+
+        // Enhanced toast notification function
+        function showToast(message, type = 'info') {
+            const toast = document.createElement('div');
+            toast.className = `toast fixed top-4 right-4 z-50 px-6 py-4 rounded-lg text-white font-semibold shadow-lg flex items-center space-x-3 max-w-sm`;
+            
+            let icon = '';
+            if (type === 'success') {
+                toast.classList.add('bg-green-600');
+                icon = `<svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                </svg>`;
+            } else if (type === 'error') {
+                toast.classList.add('bg-red-600');
+                icon = `<svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/>
+                </svg>`;
+            } else {
+                toast.classList.add('bg-blue-600');
+                icon = `<svg class="w-5 h-5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
+                </svg>`;
+            }
+            
+            toast.innerHTML = `${icon}<span class="flex-1">${message}</span>`;
+            document.body.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Remove after 4 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (document.body.contains(toast)) {
+                        document.body.removeChild(toast);
+                    }
+                }, 300);
+            }, 4000);
+        }
+
+        // Blog functions
+        function renderBlogs(posts = blogPosts) {
+            const blogGrid = document.getElementById('blog-grid');
+            blogGrid.innerHTML = '';
+            
+            posts.forEach(post => {
+                const blogCard = document.createElement('article');
+                blogCard.className = 'bg-gray-800 rounded-lg overflow-hidden card-hover border border-gray-700 cursor-pointer';
+                blogCard.onclick = () => openFullBlog(post);
+                
+                blogCard.innerHTML = `
+                    <div class="h-48 bg-gradient-to-br ${post.gradient} flex items-center justify-center">
+                        <div class="text-center text-white">
+                            <svg class="w-16 h-16 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <p class="text-sm opacity-75">${post.category.toUpperCase()}</p>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="flex items-center mb-3">
+                            <span class="bg-orange-500 text-black px-2 py-1 text-xs font-bold rounded uppercase">${post.category}</span>
+                            <span class="text-gray-400 text-sm ml-3">${post.date}</span>
+                        </div>
+                        <h3 class="text-xl font-bold mb-3 text-white hover:text-orange-400 transition-colors">
+                            ${post.title}
+                        </h3>
+                        <p class="text-gray-300 text-sm mb-4 leading-relaxed">
+                            ${post.excerpt}
+                        </p>
+                        <div class="flex items-center justify-between text-sm text-gray-400">
+                            <span>${post.author}</span>
+                            <span>${post.readTime}</span>
+                        </div>
+                    </div>
+                `;
+                
+                blogGrid.appendChild(blogCard);
+            });
+        }
+
+        function filterBlogs(category) {
+            // Update active filter button
+            document.querySelectorAll('.category-filter').forEach(btn => {
+                btn.classList.remove('active', 'bg-gradient-to-r', 'from-orange-500', 'to-red-600', 'text-white');
+                btn.classList.add('bg-gray-700', 'text-gray-300');
+            });
+            
+            const activeBtn = event.target;
+            activeBtn.classList.add('active', 'bg-gradient-to-r', 'from-orange-500', 'to-red-600', 'text-white');
+            activeBtn.classList.remove('bg-gray-700', 'text-gray-300');
+            
+            // Filter posts
+            if (category === 'all') {
+                renderBlogs(blogPosts);
+            } else {
+                const filteredPosts = blogPosts.filter(post => post.category === category);
+                renderBlogs(filteredPosts);
+            }
+        }
+
+        function openFullBlog(post) {
+            // Update full blog page content
+            document.getElementById('full-blog-category').textContent = post.category.toUpperCase();
+            document.getElementById('full-blog-date').textContent = post.date;
+            document.getElementById('full-blog-title').textContent = post.title;
+            
+            // Show full blog page
+            showPage('full-blog');
+        }
+
+        // Keyboard navigation support
+        document.addEventListener('keydown', function(event) {
+            // Close mobile menu with Escape key
+            if (event.key === 'Escape') {
+                const mobileMenu = document.getElementById('mobile-menu');
+                if (mobileMenu.classList.contains('open')) {
+                    toggleMobileMenu();
+                }
+            }
+            
+            // Quick navigation with Alt + number keys
+            if (event.altKey) {
+                switch(event.key) {
+                    case '1':
+                        event.preventDefault();
+                        showPage('home');
+                        break;
+                    case '2':
+                        event.preventDefault();
+                        showPage('news');
+                        break;
+                    case '3':
+                        event.preventDefault();
+                        showPage('blogs');
+                        break;
+                    case '4':
+                        event.preventDefault();
+                        showPage('about');
+                        break;
+                }
+            }
+        });
+
+        // Initialize with home page
+        document.addEventListener('DOMContentLoaded', function() {
+            showPage('home');
+            updateAuthUI();
+            renderBlogs(); // Initialize blog grid
+            
+            // Add smooth scrolling for better UX
+            document.documentElement.style.scrollBehavior = 'smooth';
+            
+            // Preload critical images (if any were used)
+            // This would be where you'd preload any actual images
+        });
+
+        // Initialize SDK
+        if (window.elementSdk) {
+            window.elementSdk.init({
+                defaultConfig,
+                onConfigChange,
+                mapToCapabilities,
+                mapToEditPanelValues
+            });
+        }
+    </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'996bb9644583ce12',t:'MTc2MTgzNTgxOC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
