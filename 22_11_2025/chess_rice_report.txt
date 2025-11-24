@@ -1,0 +1,13 @@
+Chessboard Rice Statistical Report
+===================================
+
+Mean: 288230376151711744.000
+Median: 3221225472.0
+Mode: 1
+Standard Deviation: 1299702752418156032.000
+Variance: 1689227244643330490099286412655329280.000
+Total Rice: 18446744073.710 Billion
+
+First Box:
+  Rice: 1
+  Total: 1
